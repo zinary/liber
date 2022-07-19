@@ -1,20 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:layout_marginHorizontal="10dp"
+    android:layout_margin="8dp"
     android:orientation="vertical">
 
-    <de.hdodenhof.circleimageview.CircleImageView
+
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/profile_image"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_gravity="center"
-        android:layout_margin="4dp"
-        android:background="?selectableItemBackgroundBorderless"
-        android:src="@drawable/ic_launcher_background" />
+        android:layout_width="100dp"
+        android:layout_height="150dp"
+        android:foreground="?selectableItemBackgroundBorderless"
+        android:src="@drawable/ic_launcher_background"
+        android:transitionName="cast_image"
+        app:shapeAppearanceOverlay="@style/roundedImageView" />
+
 
     <TextView
         android:id="@+id/profile_name"
@@ -22,8 +25,10 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
+        android:maxWidth="100dp"
         android:textColor="@color/white_med"
         android:textSize="12sp"
+        android:transitionName="actor_name"
         tools:text="test" />
 
     <TextView
@@ -38,5 +43,6 @@
         android:textSize="11sp"
         tools:ignore="SmallSp"
         tools:text="ram" />
+
 </LinearLayout>
 

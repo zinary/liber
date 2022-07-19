@@ -6,17 +6,19 @@
         android:icon="@drawable/icon_home"
         android:title="@string/title_home" />
 
-    <item
-        android:id="@+id/navigation_favorites"
-        android:icon="@drawable/ic_baseline_favorite_border_24"
-        android:title="@string/favorites" />
 
     <item
-        android:id="@+id/navigation_notifications"
-        android:icon="@drawable/ic_outline_notifications_24"
-        android:title="@string/title_notifications" />
+        android:id="@+id/navigation_search"
+        android:icon="@drawable/ic_baseline_search_24"
+        android:title="@string/title_search" />
+
     <item
-        android:id="@+id/navigation_account"
+        android:id="@+id/navigation_favorites"
+        android:icon="@drawable/watchlist"
+        android:title="@string/watchlist" />
+
+    <item
+        android:id="@+id/settingsFragment"
         android:icon="@drawable/ic_baseline_person_outline_24"
         android:title="@string/account" />
 </menu>

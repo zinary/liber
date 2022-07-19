@@ -4,69 +4,34 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.zinary.liber.api.RetrofitInstance
 import com.zinary.liber.models.*
 import com.zinary.liber.repo.MoviesRepo
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 class MovieDetailViewModel : ViewModel() {
-    private val moviesRepo by lazy { MoviesRepo() }
-
-    var movie = MutableLiveData<Movie>()
-    var castList = MutableLiveData<List<Cast>>()
-    var crewList = MutableLiveData<List<Crew>>()
-
-    var videoList = MutableLiveData<List<Video>>()
+    private val movieRepo by lazy { MoviesRepo() }
+    val movie: MutableLiveData<Resource<Movie>> = MutableLiveData()
     var apiError = MutableLiveData<String>()
 
     fun getMovieDetails(id: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val response = RetrofitInstance.moviesAPI.getMovieDetails(id)
-            if (response.isSuccessful) {
-                val movieResponse = response.body()
-                if (movieResponse != null) {
-                    movie.postValue(movieResponse!!)
+        movie.postValue(Resource.Loading())
+        viewModelScope.launch {
+            try {
+                val response = movieRepo.getMovieDetails(id)
+                if (response.isSuccessful) {
+                    val movieResponse = response.body()
+                    if (movieResponse != null) {
+                        movie.postValue(Resource.Success(movieResponse!!))
+                    }
+                } else {
+                    movie.postValue(Resource.Error(response.message()))
                 }
-            } else {
-                val error = response.errorBody()?.string().toString()
-                apiError.postValue(error)
-                Log.e(this@MovieDetailViewModel.javaClass.name, error)
+            } catch (e: Exception) {
+                Log.e("getMovieDetails", e.message, e)
+            }  catch (e : IOException) {
+                apiError.postValue(e.message)
             }
         }
     }
-
-    fun getCredits(id: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val response = RetrofitInstance.moviesAPI.getCredits(id)
-            if (response.isSuccessful) {
-                val creditsResponse = response.body()
-                if (creditsResponse != null) {
-                    castList.postValue(creditsResponse.cast)
-                    crewList.postValue(creditsResponse.crew)
-                }
-            } else {
-                val error = response.errorBody()?.string().toString()
-                apiError.postValue(error)
-                Log.e(this@MovieDetailViewModel.javaClass.name, error)
-            }
-        }
-    }
-
-    fun getVideos(id: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val response = RetrofitInstance.moviesAPI.getVideos(id)
-            if (response.isSuccessful) {
-                val videoResponse = response.body()
-                if (videoResponse != null) {
-                    videoList.postValue(videoResponse.results)
-                }
-            } else {
-                val error = response.errorBody()?.string().toString()
-                apiError.postValue(error)
-                Log.e(this@MovieDetailViewModel.javaClass.name, error)
-            }
-        }
-    }
-
 }

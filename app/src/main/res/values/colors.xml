@@ -15,8 +15,9 @@
     <color name="divider">#F1EDED</color>
     <color name="med_grey">#A6A6A6</color>
     <color name="grey">#787878</color>
-    <color name="pink">#E21938</color>
+    <color name="pink">#F44336</color>
     <color name="green">#1DB954</color>
     <color name="gold">#FFD700</color>
+    <color name="dark_grey">#191414</color>
 
 </resources>

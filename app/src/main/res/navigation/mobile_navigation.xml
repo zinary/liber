@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
+    android:label="@string/title_search"
     app:startDestination="@+id/navigation_home">
 
     <fragment
@@ -13,18 +14,31 @@
 
     <fragment
         android:id="@+id/navigation_favorites"
-        android:name="com.zinary.liber.ui.dashboard.DashboardFragment"
+        android:name="com.zinary.liber.ui.watchlist.WatchListFragment"
         android:label="Favorites"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_watchlist" />
 
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="com.zinary.liber.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        android:id="@+id/navigation_search"
+        android:name="com.zinary.liber.ui.search.SearchFragment"
+        android:label="@string/title_search"
+        tools:layout="@layout/fragment_search" />
     <fragment
         android:id="@+id/navigation_account"
-        android:name="com.zinary.liber.ui.AccountFragment"
+        android:name="com.zinary.liber.ui.profile.AccountFragment"
         android:label="fragment_account"
         tools:layout="@layout/fragment_account" />
+    <fragment
+        android:id="@+id/genreMoviesFragment"
+        android:name="com.zinary.liber.ui.home.MoviesListFragment"
+        android:label="fragment_genre_movies"
+        tools:layout="@layout/fragment_genre_movies">
+        <action
+            android:id="@+id/action_genreMoviesFragment_to_navigation_home"
+            app:destination="@id/navigation_home" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.zinary.liber.ui.profile.SettingsFragment"
+        android:label="SettingsFragment" />
 </navigation>

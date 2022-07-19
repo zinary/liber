@@ -1,39 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="start"
-    android:layout_marginHorizontal="10dp"
-    android:orientation="vertical">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="wrap_content"
-        android:layout_height="140dp"
-        android:layout_marginBottom="4dp"
-        app:cardCornerRadius="6dp"
-        app:cardElevation="8dp">
+    <WebView
+        android:id="@+id/webView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
-        <ImageView
-            android:id="@+id/thumbnail"
-            android:layout_width="wrap_content"
-            android:layout_height="140dp"
-            android:layout_gravity="center"
-            android:foreground="?selectableItemBackground"
-            tools:src="@drawable/ic_launcher_background" />
-
-    </com.google.android.material.card.MaterialCardView>
-
-    <TextView
-        android:id="@+id/video_name"
+    <ProgressBar
+        android:id="@+id/progress_circular"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:lines="2"
-        android:textColor="@color/white_med"
-        android:textSize="13sp"
-        tools:text="ram" />
+        android:layout_centerInParent="true" />
+</RelativeLayout>
 
 
-</LinearLayout>
+
+
 

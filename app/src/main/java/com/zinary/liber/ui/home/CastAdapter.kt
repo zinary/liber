@@ -1,51 +1,74 @@
 package com.zinary.liber.ui.home
 
+import android.annotation.SuppressLint
+import android.app.ActivityOptions
 import android.content.Context
+import android.content.Intent
+import android.util.Pair
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.zinary.liber.R
 import com.zinary.liber.constants.Constants
 import com.zinary.liber.databinding.CastItemBinding
 import com.zinary.liber.models.Cast
+import com.zinary.liber.utils.loadFromUrl
 
 
 class CastAdapter(private val context: Context, private var castList: List<Cast>) :
-    RecyclerView.Adapter<CastAdapter.MovieViewHolder>() {
+    RecyclerView.Adapter<CastAdapter.CastViewHolder>() {
 
-    fun setCastList(movies: List<Cast>) {
-        castList = movies
+    @SuppressLint("NotifyDataSetChanged")
+    fun setCastList(casts: List<Cast>) {
+        castList = casts
         notifyDataSetChanged()
     }
 
-    inner class MovieViewHolder(private val itemBinding: CastItemBinding) :
+    inner class CastViewHolder(private val itemBinding: CastItemBinding) :
         RecyclerView.ViewHolder(itemBinding.root) {
         fun bind(cast: Cast) {
-            val imagePath = Constants.BASE_IMAGE_URL + cast.profilePath
-            val placeholder = "https://st3.depositphotos.com/6672868/13701/v/600/depositphotos_137014128-stock-illustration-user-profile-icon.jpg"
-
-            Glide.with(context)
-                .load(if (cast.profilePath != null) imagePath else placeholder)
-                .into(itemBinding.profileImage)
-
+            val imagePath: String = Constants.BASE_IMAGE_URL + cast.profilePath
+            itemBinding.profileImage.loadFromUrl(imagePath, context, R.drawable.ic_user)
             itemBinding.profileName.text = cast.name
             itemBinding.characterName.text = cast.character
             itemBinding.profileImage.setOnClickListener {
+                val intent = Intent(context, CastDetailActivity::class.java)
+                intent.putExtra("CAST_ID", cast.id)
 
+                val imagePair = Pair.create(
+                    itemBinding.profileImage as View,
+                    itemBinding.profileImage.transitionName
+                )
+                val namePair = Pair.create(
+                    itemBinding.profileName as View,
+                    itemBinding.profileName.transitionName
+                )
+
+                val transitionActivityOptions: ActivityOptions =
+                    ActivityOptions.makeSceneTransitionAnimation(
+                        context as AppCompatActivity,
+                        imagePair,
+                        namePair
+                    )
+                context.startActivity(
+                    intent,
+                    transitionActivityOptions.toBundle()
+                )
             }
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CastViewHolder {
         val castItemBinding =
             CastItemBinding.inflate(LayoutInflater.from(context), parent, false)
-        return MovieViewHolder(castItemBinding)
+        return CastViewHolder(castItemBinding)
     }
 
-    override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: CastViewHolder, position: Int) {
         holder.bind(castList[position])
     }
 
-    override fun getItemCount(): Int = castList.size
+    override fun getItemCount(): Int = castList.count()
 }

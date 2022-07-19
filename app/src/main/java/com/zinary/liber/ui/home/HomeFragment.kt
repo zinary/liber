@@ -1,34 +1,31 @@
 package com.zinary.liber.ui.home
 
-import android.content.Intent
-import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.recyclerview.widget.LinearSnapHelper
-import androidx.recyclerview.widget.SnapHelper
-import com.google.android.material.chip.Chip
+import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
 import com.zinary.liber.MainViewModel
 import com.zinary.liber.R
-import com.zinary.liber.constants.Constants
 import com.zinary.liber.databinding.FragmentHomeBinding
 import com.zinary.liber.enums.MoviesType
-import com.zinary.liber.models.Movie
-import org.imaginativeworld.whynotimagecarousel.listener.CarouselListener
-import org.imaginativeworld.whynotimagecarousel.model.CarouselItem
-import java.util.*
 
 class HomeFragment : Fragment() {
 
+    private lateinit var popularMoviesAdapter: MovieListAdapter
+    private lateinit var topRatedMoviesAdapter: MovieListAdapter
+    private lateinit var nowPlayingMoviesAdapter: MovieListAdapter
+    private lateinit var upComingMoviesAdapter: MovieListAdapter
+
     private var _binding: FragmentHomeBinding? = null
-    private val homeViewModel by activityViewModels<HomeViewModel>()
-    private val mainViewModel by activityViewModels<MainViewModel>()
-    private lateinit var adapter: MovieListAdapter
     private val binding get() = _binding!!
-    private var timer = Timer()
+    private val mainViewModel by activityViewModels<MainViewModel>()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -40,77 +37,83 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mainViewModel.getMovies(MoviesType.POPULAR, mainViewModel.movies)
-        mainViewModel.getMovies(MoviesType.UPCOMING, mainViewModel.featuredMovies)
-        mainViewModel.getGenres()
 
-        adapter = MovieListAdapter(requireContext(), arrayListOf())
+        popularMoviesAdapter = MovieListAdapter(requireContext())
+        topRatedMoviesAdapter = MovieListAdapter(requireContext())
+        nowPlayingMoviesAdapter = MovieListAdapter(requireContext())
+        upComingMoviesAdapter = MovieListAdapter(requireContext())
 
-        binding.moviesRecyclerView.adapter = adapter
+        binding.popularMoviesRecyclerView.adapter = popularMoviesAdapter
+        binding.topRatedMoviesRecyclerView.adapter = topRatedMoviesAdapter
+        binding.nowPayingMoviesRecyclerView.adapter = nowPlayingMoviesAdapter
+        binding.upcomingMoviesRecyclerView.adapter = upComingMoviesAdapter
 
-        mainViewModel.movies.observe(viewLifecycleOwner) {
-            if (it != null) {
-                adapter.setMovieList(it)
-            }
-        }
-
-        mainViewModel.featuredMovies.observe(viewLifecycleOwner) { featuredMovies ->
+        mainViewModel.upcomingMovies.observe(viewLifecycleOwner) { featuredMovies ->
             if (featuredMovies != null) {
-                setupCarousel(featuredMovies)
+                upComingMoviesAdapter.setMovieList(featuredMovies)
             }
         }
 
-        mainViewModel.genreList.observe(viewLifecycleOwner) {
-            it?.forEachIndexed { index, item ->
-                val chip = Chip(requireContext()).apply {
-                    text = item.name
-                    if (index == 0) {
-                        chipBackgroundColor = ColorStateList.valueOf(context.getColor(R.color.pink))
-                    }
-                }
-                binding.genreChipGroup.addView(chip)
+        mainViewModel.topRatedMovies.observe(viewLifecycleOwner) { featuredMovies ->
+            if (featuredMovies != null) {
+                topRatedMoviesAdapter.setMovieList(featuredMovies)
             }
         }
 
-        mainViewModel.apiError.observe(viewLifecycleOwner) {
-            if (it != null) {
-                binding.errorMessage.text = it
+        mainViewModel.popularMovies.observe(viewLifecycleOwner) { featuredMovies ->
+            if (featuredMovies != null) {
+                popularMoviesAdapter.setMovieList(featuredMovies)
             }
         }
+
+        mainViewModel.nowPlayingMovies.observe(viewLifecycleOwner) { featuredMovies ->
+            if (featuredMovies != null) {
+                nowPlayingMoviesAdapter.setMovieList(featuredMovies)
+                binding.homeLayout.isVisible = true
+                hideProgressBar()
+            }
+        }
+
+        mainViewModel.apiError.observe(viewLifecycleOwner) { errorMessage ->
+            hideProgressBar()
+            Snackbar.make(requireContext(), binding.root, errorMessage, Snackbar.LENGTH_SHORT)
+                .show()
+        }
+
+        binding.seeMoreNowPaying.setOnClickListener {
+            openMovieListScreen(MoviesType.NOW_PLAYING)
+        }
+
+        binding.seeMoreUpcoming.setOnClickListener {
+            openMovieListScreen(MoviesType.UPCOMING)
+        }
+
+        binding.seeMorePopular.setOnClickListener {
+            openMovieListScreen(MoviesType.POPULAR)
+        }
+
+        binding.seeMoreTopRated.setOnClickListener {
+            openMovieListScreen(MoviesType.TOP_RATED)
+        }
+
 
     }
 
-    private fun setupCarousel(featuredMovies: List<Movie>) {
-        binding.carousel.registerLifecycle(viewLifecycleOwner)
-        val list = featuredMovies.map {
-            CarouselItem(
-                imageUrl = Constants.BASE_IMAGE_URL + it.backdropPath,
-                caption = it.title,
-                headers = mapOf(it.title to it.originalLanguage)
-            )
-        }
-        // Carousel listener
-        binding.carousel.carouselListener = object : CarouselListener {
-            override fun onClick(position: Int, carouselItem: CarouselItem) {
-                val intent = Intent(context, MovieDetailActivity::class.java)
-                intent.putExtra("movieId", featuredMovies[position].id)
-
-                startActivity(intent)
-            }
-        }
-
-        binding.carousel.setData(list)
+    private fun openMovieListScreen(moviesType: MoviesType) {
+        val arg = bundleOf("movieType" to moviesType)
+        findNavController().navigate(R.id.genreMoviesFragment, arg)
     }
 
-    override fun onStop() {
-        super.onStop()
-        timer.cancel()
-
+    private fun hideProgressBar() {
+        binding.progressCircular.isVisible = false
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        binding.popularMoviesRecyclerView.adapter = null
+        binding.topRatedMoviesRecyclerView.adapter = null
+        binding.nowPayingMoviesRecyclerView.adapter = null
+        binding.upcomingMoviesRecyclerView.adapter = null
         _binding = null
     }
-
 }

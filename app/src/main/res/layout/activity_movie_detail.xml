@@ -8,25 +8,24 @@
     android:animateLayoutChanges="true"
     android:background="@color/pure_black">
 
-    <de.hdodenhof.circleimageview.CircleImageView
+    <ImageView
         android:id="@+id/close_button"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_margin="10dp"
-        android:background="?selectableItemBackgroundBorderless"
-        android:elevation="20dp"
+        android:elevation="40dp"
+        android:foreground="?selectableItemBackgroundBorderless"
         android:padding="10dp"
         android:src="@drawable/ic_baseline_arrow_back_24" />
 
-
-    <de.hdodenhof.circleimageview.CircleImageView
+    <ImageView
         android:id="@+id/like_button"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_alignParentEnd="true"
         android:layout_margin="10dp"
-        android:background="?selectableItemBackgroundBorderless"
-        android:elevation="20dp"
+        android:elevation="40dp"
+        android:foreground="?selectableItemBackgroundBorderless"
         android:foregroundTint="@color/white"
         android:padding="10dp"
         android:src="@drawable/ic_baseline_favorite_border_24"
@@ -38,41 +37,37 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
+        android:elevation="20dp"
         android:indeterminateTint="@color/pink" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/movie_details_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:overScrollMode="never"
-        android:visibility="invisible"
-        tools:visibility="visible">
+        android:overScrollMode="never">
 
         <LinearLayout
             android:id="@+id/movie_details_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
             android:orientation="vertical">
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="420dp">
 
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/poster_card"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="20dp">
 
-                    <ImageView
-                        android:id="@+id/movie_poster"
-                        android:layout_width="wrap_content"
-                        android:layout_height="300dp"
-                        android:scaleType="fitXY"
-                        tools:src="@drawable/ic_launcher_background" />
-                </com.google.android.material.card.MaterialCardView>
+                <com.google.android.material.imageview.ShapeableImageView
+
+                    android:id="@+id/movie_poster"
+                    android:layout_width="200dp"
+                    android:layout_height="300dp"
+                    android:layout_centerInParent="true"
+                    android:elevation="20dp"
+                    android:scaleType="fitXY"
+                    app:shapeAppearanceOverlay="@style/roundedImageView"
+                    tools:src="@drawable/ic_launcher_background" />
 
                 <ImageView
                     android:id="@+id/movie_banner"
@@ -80,6 +75,7 @@
                     android:layout_height="420dp"
                     android:foreground="@drawable/gradient"
                     android:scaleType="centerCrop"
+
                     tools:src="@drawable/ic_launcher_background" />
 
                 <ImageView
@@ -94,7 +90,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="invisible"
+                tools:visibility="visible">
 
                 <TextView
                     android:id="@+id/title"
@@ -111,7 +109,7 @@
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="0dp"
                     android:layout_weight="1">
 
                     <TextView
@@ -119,7 +117,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:layout_toStartOf="@+id/genre"
+                        android:layout_toStartOf="@+id/original_language"
                         android:drawablePadding="10dp"
                         android:textColor="@color/white_med"
                         android:textSize="14sp"
@@ -128,7 +126,7 @@
                         tools:text="2020" />
 
                     <TextView
-                        android:id="@+id/genre"
+                        android:id="@+id/original_language"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
@@ -144,7 +142,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:layout_toEndOf="@+id/genre"
+                        android:layout_toEndOf="@+id/original_language"
                         android:drawablePadding="10dp"
                         android:textColor="@color/white_med"
                         android:textSize="14sp"
@@ -158,6 +156,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:gravity="center"
+
                     android:orientation="horizontal">
 
                     <ImageView
@@ -196,6 +195,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="20dp"
                     android:ellipsize="end"
+                    android:maxLines="5"
                     android:textColor="@color/med_grey"
                     android:textSize="14sp"
                     tools:text="Overview" />
@@ -206,10 +206,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="10dp"
-                    android:text="@string/creators"
                     android:textColor="@color/white"
                     android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:text="@string/director" />
 
                 <TextView
                     android:id="@+id/creators_details"
@@ -220,6 +220,32 @@
                     android:textColor="@color/med_grey"
                     android:textSize="14sp"
                     tools:text="Overview" />
+
+
+                <LinearLayout
+                    android:id="@+id/genre_section"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="20dp"
+                        android:text="@string/genres"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/genre_chip_group"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:clipToPadding="false"
+                        android:paddingHorizontal="20dp" />
+                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/cast_layout"
@@ -244,7 +270,7 @@
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/cast_recycler_view"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_gravity="center"
                         android:clipToPadding="false"
                         android:orientation="horizontal"
@@ -255,12 +281,65 @@
                         tools:listitem="@layout/cast_item" />
                 </LinearLayout>
 
-
                 <LinearLayout
                     android:id="@+id/video_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:animateLayoutChanges="true"
+                    android:orientation="vertical"
+
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="20dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="10dp"
+                        android:text="@string/trailers"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <androidx.viewpager2.widget.ViewPager2
+                        android:id="@+id/video_pager"
+                        android:layout_width="match_parent"
+                        android:layout_height="246dp"
+                        android:layout_marginHorizontal="20dp"
+                        android:orientation="horizontal" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/external_id_section"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="20dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="10dp"
+                        android:text="@string/external_links"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/external_links_chip_group"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:clipToPadding="false"
+                        android:paddingHorizontal="20dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/posters_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:visibility="gone"
                     tools:visibility="visible">
@@ -271,13 +350,13 @@
                         android:layout_marginHorizontal="20dp"
                         android:layout_marginTop="20dp"
                         android:layout_marginBottom="10dp"
-                        android:text="@string/videos"
+                        android:text="@string/posters"
                         android:textColor="@color/white"
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
                     <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/video_recycler_view"
+                        android:id="@+id/posters_recycler_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -287,27 +366,94 @@
                         android:paddingHorizontal="10dp"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         tools:itemCount="5"
-                        tools:listitem="@layout/video_item" />
+                        tools:listitem="@layout/movie_image_item" />
                 </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/back_drop_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="20dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="10dp"
+                        android:text="@string/backdrops"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/backdrop_recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:clipToPadding="false"
+                        android:orientation="horizontal"
+                        android:overScrollMode="never"
+                        android:paddingHorizontal="10dp"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        tools:itemCount="5"
+                        tools:listitem="@layout/movie_image_item" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/recommended_section"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="20dp"
+                        android:text="@string/you_might_also_like"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recommended_movies_recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:clipToPadding="false"
+                        android:orientation="horizontal"
+                        android:overScrollMode="never"
+
+                        android:paddingHorizontal="10dp"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        tools:itemCount="10"
+                        tools:listitem="@layout/movie_poster_tile" />
+                </LinearLayout>
+
             </LinearLayout>
 
+
             <Button
-                android:id="@+id/save_address_button"
                 style="@style/Widget.MaterialComponents.Button"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_height="0dp"
+                android:layout_margin="20dp"
+                android:layout_weight="1"
                 android:height="60dp"
                 android:backgroundTint="@color/pink"
                 android:elevation="12dp"
                 android:letterSpacing="0"
                 android:shadowColor="@color/pink"
-                android:text="@string/buy_now"
+                android:text="@string/rate_movie"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                app:cornerRadius="10dp" />
+                app:cornerRadius="24dp" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

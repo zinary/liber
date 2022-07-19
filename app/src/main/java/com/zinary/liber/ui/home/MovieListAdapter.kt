@@ -1,40 +1,45 @@
 package com.zinary.liber.ui.home
 
-import android.annotation.SuppressLint
-import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.zinary.liber.MainActivity
 import com.zinary.liber.constants.Constants
 import com.zinary.liber.databinding.MoviePosterTileBinding
 import com.zinary.liber.models.Movie
+import com.zinary.liber.utils.loadFromUrl
 
-class MovieListAdapter(private val context: Context, private var movieList: List<Movie>) :
+class MovieListAdapter(private val context: Context) :
     RecyclerView.Adapter<MovieListAdapter.MovieViewHolder>() {
 
-    @SuppressLint("NotifyDataSetChanged")
+    private val differ = AsyncListDiffer(this, object : DiffUtil.ItemCallback<Movie>() {
+        override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: Movie, newItem: Movie): Boolean {
+            return oldItem == newItem
+        }
+    })
+
     fun setMovieList(movies: List<Movie>) {
-        movieList = movies
-        notifyDataSetChanged()
+        differ.submitList(movies)
     }
 
     inner class MovieViewHolder(private val itemBinding: MoviePosterTileBinding) :
         RecyclerView.ViewHolder(itemBinding.root) {
         fun bind(movie: Movie) {
-            Glide.with(context)
-                .load(Constants.BASE_IMAGE_URL + movie.posterPath)
-                .into(itemBinding.moviePoster)
+
+            itemBinding.moviePoster.loadFromUrl(
+                Constants.BASE_IMAGE_URL + movie.posterPath,
+                context
+            )
             itemBinding.moviePoster.setOnClickListener {
                 val intent = Intent(context, MovieDetailActivity::class.java)
                 intent.putExtra("movieId", movie.id)
-//                val options = ActivityOptions
-//                    .makeSceneTransitionAnimation((context as MainActivity), itemBinding.posterContainer, "image")
-                // start the new activity
                 context.startActivity(intent)
             }
         }
@@ -47,8 +52,8 @@ class MovieListAdapter(private val context: Context, private var movieList: List
     }
 
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
-        holder.bind(movieList[position])
+        holder.bind(differ.currentList[position])
     }
 
-    override fun getItemCount(): Int = movieList.size
+    override fun getItemCount(): Int = differ.currentList.count()
 }

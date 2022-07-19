@@ -3,6 +3,7 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="title_search">Search</string>
     <string name="title_settings">Settings</string>
     <string name="overview">Overview</string>
     <string name="plot_summary">Plot Summary</string>
@@ -15,6 +16,46 @@
     <string name="popular">Popular</string>
     <string name="account">Account</string>
     <string name="favorites">Favorites</string>
-<!-- TODO: Remove or change this placeholder text -->
+    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="see_more">See more</string>
+    <string name="liber">Liber.</string>
+    <string name="director">Director</string>
+    <string name="directors">Directors</string>
+    <string name="recommended_movies">Recommended movies</string>
+    <string name="rate_movie">Rate Movie</string>
+    <string name="genres">Genres</string>
+    <string name="more_like_this">More like this</string>
+    <string name="photos">Photos</string>
+    <string name="no_results_found">No results found</string>
+    <string name="you_might_also_like">You might also like</string>
+    <string name="biography">Biography</string>
+    <string name="your_watchlist_is_empty">Your watchlist is empty…</string>
+    <string name="about">About</string>
+    <string name="my_profile">My profile</string>
+    <string name="watchlist">Watchlist</string>
+    <string name="upcoming">Upcoming</string>
+    <string name="now_playing">Now Playing</string>
+    <string name="top_rated">Top Rated</string>
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="trailers">Trailers</string>
+    <string name="external_links">External Links</string>
+    <string name="posters">Posters</string>
+    <string name="backdrops">Backdrops</string>
+    <string name="also_know_as">Also know as</string>
+    <string name="birthday">Birthday</string>
+    <string name="known_for">Known for</string>
 </resources>
