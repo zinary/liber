@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
+    android:background="@color/pure_black"
     android:orientation="vertical"
     tools:context=".ui.search.SearchFragment">
 
@@ -24,24 +24,24 @@
         app:queryHint="Search movies or TV..."
         app:searchIcon="@drawable/ic_baseline_search_24" />
 
-    <RelativeLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
 
         <LinearLayout
             android:id="@+id/empty_state"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
+            android:layout_gravity="center"
             android:orientation="vertical"
             android:visibility="gone"
             tools:visibility="visible">
 
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/animation_view"
-                android:layout_width="match_parent"
+                android:layout_width="200dp"
                 android:layout_height="200dp"
+                android:layout_gravity="center"
                 app:lottie_autoPlay="true"
                 app:lottie_loop="true"
                 app:lottie_url="https://assets10.lottiefiles.com/packages/lf20_dmw3t0vg.json" />
@@ -57,29 +57,56 @@
                 android:textStyle="bold" />
         </LinearLayout>
 
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/refresh_layout"
+        <LinearLayout
+            android:id="@+id/results_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tab_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:tabIndicatorColor="@color/pink"
+                app:tabSelectedTextColor="@color/pink"
+                app:tabTextColor="@color/med_grey">
+
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Movie" />
+
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tv" />
+
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Person" />
+
+            </com.google.android.material.tabs.TabLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/movies_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scrollbars="vertical"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:itemCount="10"
                 tools:listitem="@layout/movie_poster_tile" />
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        </LinearLayout>
 
-
-        <com.magicgoop.tagsphere.TagSphereView
-            android:id="@+id/tagView"
-            app:rotateOnTouch="true"
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/generes_chip_group"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_centerInParent="true" />
-    </RelativeLayout>
+            android:layout_marginHorizontal="20dp">
+
+        </com.google.android.material.chip.ChipGroup>
+    </FrameLayout>
 
 
 </LinearLayout>

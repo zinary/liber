@@ -1,9 +1,10 @@
 package com.zinary.liber.ui.home
 
+import android.app.ActivityOptions
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.children
 import androidx.core.view.isVisible
 import com.google.android.material.chip.Chip
 import com.zinary.liber.R
@@ -13,10 +14,11 @@ import com.zinary.liber.models.Person
 import com.zinary.liber.utils.Utils
 import com.zinary.liber.utils.loadFromUrl
 
-class CastDetailActivity : AppCompatActivity() {
+class CastDetailActivity : AppCompatActivity() , ImageAdapter.OnImageClickListener {
 
     private lateinit var binding: ActivityCastDetailBinding
     private lateinit var recommendedMoviesAdapter: MovieListAdapter
+    private lateinit var photosAdapter: ImageAdapter
 
     private val viewModel by viewModels<CastDetailViewModel>()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,6 +33,7 @@ class CastDetailActivity : AppCompatActivity() {
 
         binding.closeButton.setOnClickListener { onBackPressed() }
         recommendedMoviesAdapter = MovieListAdapter(this)
+        photosAdapter = ImageAdapter(this)
 
         viewModel.person.observe(this) { person ->
             setupUi(person)
@@ -38,16 +41,19 @@ class CastDetailActivity : AppCompatActivity() {
     }
 
     private fun setupUi(person: Person) {
-        binding.castMoviesRecyclerView.adapter = recommendedMoviesAdapter
-        recommendedMoviesAdapter.setMovieList(person.credits.cast)
-//        binding.imagesViewPager.adapter = ImagesAdapter(this, images)
 
         binding.image.loadFromUrl(Constants.BASE_IMAGE_URL + person.profilePath, this)
-        binding.moviesBy.text = "Movies by ${person.name}"
+        binding.moviesBy.text = "Movies featuring ${person.name}"
         binding.profileName.text = person.name
-        binding.aka.text = person.alsoKnownAs.joinToString()
-        binding.knownFor.text = person.knownForDepartment
         binding.biography.text = person.biography
+
+        binding.photosRecyclerView.adapter = photosAdapter
+        photosAdapter.setMovieImageList(person.images.profiles)
+        binding.photosLayout.isVisible = person.images.profiles.isNotEmpty()
+
+        binding.castMoviesRecyclerView.adapter = recommendedMoviesAdapter
+        recommendedMoviesAdapter.setMovieList(person.credits.cast)
+        binding.moviesSection.isVisible = person.images.profiles.isNotEmpty()
 
         var clicked = false
         binding.biography.setOnClickListener {
@@ -107,5 +113,14 @@ class CastDetailActivity : AppCompatActivity() {
         }
 
         binding.externalIdSection.isVisible = chips.isNotEmpty()
+    }
+
+    override fun onImageClicked(position: Int, urls: ArrayList<String>) {
+        val intent = Intent(this, ImagePreviewActivity::class.java)
+        intent.putExtra(Constants.IMAGE_INDEX, position)
+        intent.putStringArrayListExtra(Constants.IMAGE_URLS, urls)
+        startActivity(
+            intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle()
+        )
     }
 }

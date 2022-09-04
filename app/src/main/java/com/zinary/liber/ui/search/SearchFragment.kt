@@ -1,9 +1,7 @@
 package com.zinary.liber.ui.search
 
 import android.app.Activity
-import android.graphics.Color
 import android.os.Bundle
-import android.text.TextPaint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,22 +13,21 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
-import com.magicgoop.tagsphere.OnTagTapListener
-import com.magicgoop.tagsphere.item.TagItem
-import com.magicgoop.tagsphere.item.TextTagItem
+import androidx.paging.filter
+import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.material.tabs.TabLayout
 import com.zinary.liber.MainViewModel
 import com.zinary.liber.databinding.FragmentSearchBinding
-import com.zinary.liber.ui.home.VerticalMovieListAdapter
 import kotlinx.coroutines.launch
 
+class SearchFragment : Fragment() {
 
-class SearchFragment : Fragment(), OnTagTapListener {
-
-    private lateinit var moviesAdapter: VerticalMovieListAdapter
+    private lateinit var moviesAdapter: SearchAdapter
 
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
     private val viewModel by activityViewModels<MainViewModel>()
+    private var selectedMediaType = "movie"
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -74,22 +71,22 @@ class SearchFragment : Fragment(), OnTagTapListener {
             }
         })
 
-        moviesAdapter = VerticalMovieListAdapter()
+        moviesAdapter = SearchAdapter()
+        binding.moviesRecyclerView.layoutManager =
+            GridLayoutManager(requireContext(), 3) // todo figure out size of the layout
         binding.moviesRecyclerView.adapter = moviesAdapter
 
         moviesAdapter.addLoadStateListener { loadState ->
             if (loadState.refresh is LoadState.Loading) {
-                binding.tagView.isVisible = false
-                binding.refreshLayout.isRefreshing = false
+                binding.generesChipGroup.isVisible = false
+                binding.emptyState.isVisible = false
             }
 
-            if (loadState.refresh is LoadState.NotLoading && moviesAdapter.itemCount == 0) {
-                if (binding.searchView.query.isNotBlank()) {
-                    binding.emptyState.isVisible = true
-                    binding.tagView.isVisible = false
-                } else {
-                    binding.emptyState.isVisible = false
-                    binding.tagView.isVisible = true
+            if (loadState.refresh is LoadState.NotLoading) {
+                binding.resultsLayout.isVisible =
+                    binding.searchView.query.isNotBlank() && moviesAdapter.itemCount > 0
+                if (loadState.refresh.endOfPaginationReached) {
+                    binding.emptyState.isVisible = binding.searchView.query.isNotBlank() && moviesAdapter.itemCount == 0
                 }
             }
 
@@ -102,37 +99,30 @@ class SearchFragment : Fragment(), OnTagTapListener {
             }
         }
 
-        viewModel.genreList.observe(viewLifecycleOwner) { genres ->
-            binding.tagView.setOnTagTapListener(this)
-            binding.tagView.startAutoRotation()
-            binding.tagView.setTextPaint(
-                TextPaint().apply {
-                    isAntiAlias = true
-                    textSize = 50f
-                    color = Color.WHITE
-                }
-            )
-            genres.map {
-                TextTagItem(text = it.name)
-            }.toList().let {
-                binding.tagView.addTagList(it)
+        binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                selectedMediaType = tab?.text?.toString()?.lowercase() ?: "movie"
+                moviesAdapter.refresh()
             }
-        }
-    }
 
-    override fun onTap(tagItem: TagItem) {
-        binding.tagView.stopAutoRotation()
-        binding.searchView.setQuery((tagItem as TextTagItem).text, true)
+            override fun onTabUnselected(tab: TabLayout.Tab?) = Unit
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+                binding.moviesRecyclerView.smoothScrollToPosition(0)
+            }
+        })
+
+        viewModel.genreList.observe(viewLifecycleOwner) { genres ->
+            // todo
+        }
     }
 
     private fun performSearch(query: String) {
-        binding.moviesRecyclerView.scrollToPosition(0)
         viewModel.searchMovies(query).observe(viewLifecycleOwner) { pagingData ->
             lifecycleScope.launch {
-                moviesAdapter.submitData(pagingData)
+                moviesAdapter.submitData(pagingData.filter { it.mediaType == selectedMediaType })
             }
         }
-
     }
 
     override fun onDestroy() {
@@ -145,6 +135,4 @@ class SearchFragment : Fragment(), OnTagTapListener {
         binding.moviesRecyclerView.adapter = null
         _binding = null
     }
-
-
 }

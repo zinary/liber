@@ -12,7 +12,7 @@ import com.zinary.liber.models.Image
 import com.zinary.liber.utils.loadFromUrl
 
 
-class MovieImageAdapter(private val onImageClickListener: OnImageClickListener) :
+class ImageAdapter(private val onImageClickListener: OnImageClickListener) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val poster = 1

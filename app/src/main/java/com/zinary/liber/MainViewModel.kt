@@ -10,9 +10,13 @@ import com.zinary.liber.api.RetrofitInstance
 import com.zinary.liber.enums.MoviesType
 import com.zinary.liber.models.Genres
 import com.zinary.liber.models.Movie
+import com.zinary.liber.models.SearchResult
 import com.zinary.liber.repo.MoviesRepo
 import com.zinary.liber.ui.search.SearchPageSource
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.switchMap
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
@@ -51,12 +55,11 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    fun searchMovies(query: String): LiveData<PagingData<Movie>> {
+    fun searchMovies(query: String): LiveData<PagingData<SearchResult>> {
         return Pager(PagingConfig(pageSize = 20)) {
             SearchPageSource(query)
         }.liveData.cachedIn(viewModelScope)
     }
-
 
     fun getGenres() {
         viewModelScope.launch(Dispatchers.IO) {

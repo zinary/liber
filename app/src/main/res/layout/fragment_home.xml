@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:overScrollMode="never"
-        android:visibility="gone"
+        android:visibility="invisible"
         tools:visibility="visible">
 
         <LinearLayout
@@ -46,18 +46,20 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/now_playing"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal">
+                android:background="?selectableItemBackground"
+                android:orientation="horizontal"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="10dp">
 
                 <TextView
                     android:id="@+id/now_paying_title"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/now_playing"
+                    android:text="@string/now_in_theatres"
                     android:textColor="@color/white"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -69,7 +71,7 @@
                     android:layout_gravity="end"
                     android:gravity="end"
                     android:text="@string/see_more"
-                    android:textColor="@color/white"
+                    android:textColor="@color/white_med"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -86,11 +88,13 @@
 
 
             <LinearLayout
+                android:id="@+id/upcoming"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal">
+                android:background="?selectableItemBackground"
+                android:orientation="horizontal"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="10dp">
 
                 <TextView
                     android:id="@+id/upcoming_title"
@@ -109,7 +113,7 @@
                     android:layout_gravity="end"
                     android:gravity="end"
                     android:text="@string/see_more"
-                    android:textColor="@color/white"
+                    android:textColor="@color/white_med"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -126,11 +130,13 @@
 
 
             <LinearLayout
+                android:id="@+id/popular"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal">
+                android:background="?selectableItemBackground"
+                android:orientation="horizontal"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="10dp">
 
                 <TextView
                     android:id="@+id/popular_title"
@@ -149,7 +155,7 @@
                     android:layout_gravity="end"
                     android:gravity="end"
                     android:text="@string/see_more"
-                    android:textColor="@color/white"
+                    android:textColor="@color/white_med"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -166,11 +172,13 @@
 
 
             <LinearLayout
+                android:id="@+id/top_rated"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal">
+                android:background="?selectableItemBackground"
+                android:orientation="horizontal"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="10dp">
 
                 <TextView
                     android:id="@+id/top_rated_title"
@@ -189,7 +197,7 @@
                     android:layout_gravity="end"
                     android:gravity="end"
                     android:text="@string/see_more"
-                    android:textColor="@color/white"
+                    android:textColor="@color/white_med"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -204,7 +212,39 @@
                 tools:itemCount="10"
                 tools:listitem="@layout/movie_poster_tile" />
 
+            <LinearLayout
+                android:id="@+id/cast_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:animateLayoutChanges="true"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:text="@string/cast"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/cast_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:clipToPadding="false"
+                    android:orientation="horizontal"
+                    android:overScrollMode="never"
+                    android:paddingHorizontal="10dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:itemCount="5"
+                    tools:listitem="@layout/cast_item" />
+            </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
@@ -213,7 +253,7 @@
         android:id="@+id/progress_circular"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_gravity="center"
         android:indeterminateTint="@color/pink" />
 
-</RelativeLayout>
+</FrameLayout>

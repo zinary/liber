@@ -95,12 +95,12 @@ dependencies {
     implementation 'nl.bryanderidder:themed-toggle-button-group:1.4.1'
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
-    implementation "com.yuyakaido.android:card-stack-view:2.3.4"
     // debugImplementation because LeakCanary should only run in debug builds.
 //    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.9.1'
 
     implementation 'com.airbnb.android:lottie:5.2.0'
     implementation 'com.alexvasilkov:gesture-views:2.8.3'
     implementation 'com.github.magic-goop:tag-sphere:1.0.0'
+    implementation 'com.github.st235:expandablebottombar:1.4.0'
 
 }

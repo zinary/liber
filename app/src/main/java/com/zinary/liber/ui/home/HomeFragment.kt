@@ -5,6 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.core.text.bold
+import androidx.core.text.buildSpannedString
+import androidx.core.text.color
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -37,6 +40,13 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val newText = buildSpannedString {
+            bold { append("Liber") }
+            color(R.color.pink) {
+                append(".")
+            }
+        }
+        binding.title.text = newText
 
         popularMoviesAdapter = MovieListAdapter(requireContext())
         topRatedMoviesAdapter = MovieListAdapter(requireContext())
@@ -80,23 +90,21 @@ class HomeFragment : Fragment() {
                 .show()
         }
 
-        binding.seeMoreNowPaying.setOnClickListener {
+        binding.nowPlaying.setOnClickListener {
             openMovieListScreen(MoviesType.NOW_PLAYING)
         }
 
-        binding.seeMoreUpcoming.setOnClickListener {
+        binding.upcoming.setOnClickListener {
             openMovieListScreen(MoviesType.UPCOMING)
         }
 
-        binding.seeMorePopular.setOnClickListener {
+        binding.popular.setOnClickListener {
             openMovieListScreen(MoviesType.POPULAR)
         }
 
-        binding.seeMoreTopRated.setOnClickListener {
+        binding.topRated.setOnClickListener {
             openMovieListScreen(MoviesType.TOP_RATED)
         }
-
-
     }
 
     private fun openMovieListScreen(moviesType: MoviesType) {

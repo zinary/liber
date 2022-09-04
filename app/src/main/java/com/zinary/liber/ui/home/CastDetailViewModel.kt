@@ -33,21 +33,6 @@ class CastDetailViewModel : ViewModel() {
         }
     }
 
-    fun getPersonImages(id: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val response = RetrofitInstance.moviesAPI.getPersonImages(id)
-            if (response.isSuccessful) {
-                val imagesResponse = response.body()
-                if (imagesResponse != null) {
-                    images.postValue(imagesResponse.results)
-                }
-            } else {
-                val error = response.errorBody()?.string().toString()
-                apiError.postValue(error)
-                Log.e(this@CastDetailViewModel.javaClass.name, error)
-            }
-        }
-    }
 
     fun getPersonMovies(id: Int) {
         viewModelScope.launch(Dispatchers.IO) {

@@ -11,8 +11,9 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.chip.Chip
-import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.tabs.TabLayout
 import com.zinary.liber.R
 import com.zinary.liber.constants.Constants
 import com.zinary.liber.constants.Constants.IMAGE_INDEX
@@ -21,17 +22,19 @@ import com.zinary.liber.databinding.ActivityMovieDetailBinding
 import com.zinary.liber.models.Movie
 import com.zinary.liber.models.Resource
 import com.zinary.liber.utils.loadFromUrl
+import kotlinx.coroutines.launch
 import org.json.JSONArray
 import java.util.*
-import kotlin.collections.ArrayList
 
-class MovieDetailActivity : AppCompatActivity(), MovieImageAdapter.OnImageClickListener {
+
+class MovieDetailActivity : AppCompatActivity(), ImageAdapter.OnImageClickListener {
 
     private lateinit var binding: ActivityMovieDetailBinding
     private lateinit var castAdapter: CastAdapter
     private lateinit var videoAdapter: VideoAdapter
-    private lateinit var posterAdapter: MovieImageAdapter
-    private lateinit var backDropAdapter: MovieImageAdapter
+    private lateinit var posterAdapter: ImageAdapter
+    private lateinit var backDropAdapter: ImageAdapter
+    private lateinit var reviewsAdapter: ReviewsAdapter
     private lateinit var recommendedMoviesAdapter: MovieListAdapter
 
     private val movieDetailViewModel by viewModels<MovieDetailViewModel>()
@@ -41,30 +44,27 @@ class MovieDetailActivity : AppCompatActivity(), MovieImageAdapter.OnImageClickL
         binding = ActivityMovieDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val movieId = intent.extras?.get("movieId") as? Int
-        if (movieId != null) {
-            movieDetailViewModel.getMovieDetails(movieId)
-        } else {
-            Toast.makeText(this, "Invalid Movie ID", Toast.LENGTH_SHORT).show()
-            finish()
-        }
+        setSupportActionBar(binding.toolBar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true);
 
-        binding.closeButton.setOnClickListener { onBackPressed() }
-        binding.likeButton.setOnClickListener {
-            Snackbar.make(binding.root, "Added to your watchlist", Snackbar.LENGTH_SHORT).show()
-        }
+        getMovieDetails(intent)
 
         castAdapter = CastAdapter(this, arrayListOf())
         videoAdapter = VideoAdapter()
-        posterAdapter = MovieImageAdapter(this)
-        backDropAdapter = MovieImageAdapter(this)
+        posterAdapter = ImageAdapter(this)
+        backDropAdapter = ImageAdapter(this)
         recommendedMoviesAdapter = MovieListAdapter(this)
+        reviewsAdapter = ReviewsAdapter()
 
         binding.castRecyclerView.adapter = castAdapter
         binding.castRecyclerView.setHasFixedSize(true)
         binding.postersRecyclerView.adapter = posterAdapter
+        binding.postersRecyclerView.setHasFixedSize(true)
         binding.backdropRecyclerView.adapter = backDropAdapter
+        binding.backdropRecyclerView.setHasFixedSize(true)
         binding.recommendedMoviesRecyclerView.adapter = recommendedMoviesAdapter
+        binding.recommendedMoviesRecyclerView.setHasFixedSize(true)
+        binding.reviewRecyclerview.adapter = reviewsAdapter
         binding.videoPager.adapter = videoAdapter
 
         movieDetailViewModel.apiError.observe(this) { message ->
@@ -76,7 +76,8 @@ class MovieDetailActivity : AppCompatActivity(), MovieImageAdapter.OnImageClickL
                 is Resource.Success -> {
                     movieResponse.data?.let { movie -> setupUi(movie) }
                     hideProgressBar()
-                    binding.extraDetailsLayout.isVisible = true
+                    binding.appBarLayout.isVisible = true
+                    binding.movieDetailsScrollView.isVisible = true
                 }
                 is Resource.Error -> {
                     hideProgressBar()
@@ -92,6 +93,16 @@ class MovieDetailActivity : AppCompatActivity(), MovieImageAdapter.OnImageClickL
         }
     }
 
+    private fun getMovieDetails(intent:Intent) {
+        val movieId = intent.extras?.get("movieId") as? Int
+        if (movieId != null) {
+            movieDetailViewModel.getMovieDetails(movieId)
+        } else {
+            Toast.makeText(this, "Invalid Movie ID", Toast.LENGTH_SHORT).show()
+            finish()
+        }
+    }
+
     private fun handleWatchProviders(providers: Map<String, Any>) {
         if (providers.isNotEmpty()) {
             val locale = Locale.getDefault().country
@@ -103,7 +114,6 @@ class MovieDetailActivity : AppCompatActivity(), MovieImageAdapter.OnImageClickL
                 val flatRate = countryData["flatrate"] as? JSONArray
                 val rent = countryData["rent"] as? JSONArray
                 if (flatRate != null) {
-                    println(flatRate.toString())
                     Toast.makeText(this, flatRate.toString(), Toast.LENGTH_SHORT).show()
                 }
                 if (buy != null) {
@@ -114,7 +124,6 @@ class MovieDetailActivity : AppCompatActivity(), MovieImageAdapter.OnImageClickL
                 if (rent != null) {
                     println(rent.toString())
                     Toast.makeText(this, rent.toString(), Toast.LENGTH_SHORT).show()
-
                 }
             } else {
                 val countryData = results?.get("GB") as? Map<*, *>
@@ -139,17 +148,20 @@ class MovieDetailActivity : AppCompatActivity(), MovieImageAdapter.OnImageClickL
             setColorFilter(getColor(R.color.black), PorterDuff.Mode.SCREEN)
         }
 
+        setToolBarTitle(movie.title)
+
         binding.moviePoster.loadFromUrl(imageUrl, this)
         binding.title.text = movie.title
+        binding.status.text = movie.status
+        binding.originalTitle.text = movie.originalTitle
         binding.yearOfRelease.text = movie.releaseDate.split("-").first()
         binding.originalLanguage.text = Locale(movie.originalLanguage).displayLanguage
         binding.runTime.text = getString(R.string.runtime_mins).format(movie.runtime)
-        binding.rating.text =
-            if (movie.voteAverage > 0.0) movie.voteAverage.toString() else "N/A"
+        binding.ratingBar.rating = movie.voteAverage.toFloat() / 2
 
         var overViewClicked = false
         binding.overview.apply {
-            text = movie.overview
+            text = movie.overview.ifBlank { "Unavailable" }
             setOnClickListener {
                 overViewClicked = !overViewClicked
                 maxLines = if (overViewClicked) Int.MAX_VALUE else 5
@@ -221,7 +233,6 @@ class MovieDetailActivity : AppCompatActivity(), MovieImageAdapter.OnImageClickL
             )
         }
         if (movie.externalIDs.twitterId != null) {
-
             chips.add(
                 createExternalIdChip(
                     "Twitter",
@@ -230,8 +241,8 @@ class MovieDetailActivity : AppCompatActivity(), MovieImageAdapter.OnImageClickL
                 )
             )
         }
-        if (movie.externalIDs.imdbId != null) {
 
+        if (movie.externalIDs.imdbId != null) {
             chips.add(
                 createExternalIdChip(
                     "IMDB",
@@ -241,13 +252,47 @@ class MovieDetailActivity : AppCompatActivity(), MovieImageAdapter.OnImageClickL
             )
         }
 
+        binding.externalLinksChipGroup.removeAllViews()
+
         chips.forEach { chip ->
             binding.externalLinksChipGroup.addView(chip)
         }
 
         binding.externalIdSection.isVisible = chips.isNotEmpty()
+//        handleWatchProviders(movie.watchProviders)
 
-        handleWatchProviders(movie.watchProviders)
+        movieDetailViewModel.getReviews(movie.id).observe(this) { review ->
+            lifecycleScope.launch {
+                reviewsAdapter.submitData(review)
+            }
+        }
+
+        binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                binding.movieDetailsScrollView.isVisible = tab?.position == 0
+                binding.reviewRecyclerview.isVisible = tab?.position == 1
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) = Unit
+            override fun onTabReselected(tab: TabLayout.Tab?) = Unit
+        })
+    }
+
+    private fun setToolBarTitle(title: String) {
+        var isShow = true
+        var scrollRange = -1
+        binding.appBarLayout.addOnOffsetChangedListener { barLayout, verticalOffset ->
+            if (scrollRange == -1) {
+                scrollRange = barLayout?.totalScrollRange!!
+            }
+            if (scrollRange + verticalOffset == 0) {
+                binding.collapsingToolBar.title = title
+                isShow = true
+            } else if (isShow) {
+                binding.collapsingToolBar.title = " "
+                isShow = false
+            }
+        }
     }
 
     private fun createExternalIdChip(name: String, url: String, iconDrawableId: Int? = null): Chip {
@@ -266,14 +311,6 @@ class MovieDetailActivity : AppCompatActivity(), MovieImageAdapter.OnImageClickL
         }
 
         return chip
-    }
-
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> onBackPressed()
-        }
-        return super.onOptionsItemSelected(item)
     }
 
     override fun onDestroy() {
@@ -295,4 +332,15 @@ class MovieDetailActivity : AppCompatActivity(), MovieImageAdapter.OnImageClickL
         )
     }
 
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        if (intent != null) {
+            getMovieDetails(intent)
+        }
+    }
 }

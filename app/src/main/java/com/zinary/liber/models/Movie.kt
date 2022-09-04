@@ -32,5 +32,6 @@ data class Movie(
     @SerializedName("images") val images: MovieImagesResponse,
     @SerializedName("recommendations") val recommendations: MovieResponse,
     @SerializedName("external_ids") val externalIDs: ExternalIDs,
+    @SerializedName("reviews") val reviews: ReviewResponse,
     @SerializedName("watch/providers") val watchProviders: Map<String, Any>
 )

@@ -1,29 +1,26 @@
 package com.zinary.liber.ui.home
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.*
+import androidx.recyclerview.widget.GridLayoutManager
 import com.zinary.liber.MainViewModel
 import com.zinary.liber.databinding.FragmentGenreMoviesBinding
 import com.zinary.liber.enums.MoviesType
 import kotlinx.coroutines.launch
 import java.util.*
 
-
 class MoviesListFragment : Fragment() {
-
 
     private var _binding: FragmentGenreMoviesBinding? = null
     private val binding get() = _binding!!
-    private val mainViewModel by activityViewModels<MainViewModel>()
-    private val moviesAdapter = VerticalMovieListAdapter()
+    private val moviesAdapter = VerticalMovieListAdapter(VerticalMovieListAdapter.ViewType.GRID)
     private var movieType: MoviesType? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -43,10 +40,13 @@ class MoviesListFragment : Fragment() {
             }
         }
 
-        binding.moviesRecyclerView.adapter = moviesAdapter
+        binding.moviesRecyclerView.setHasFixedSize(true)
+        binding.moviesRecyclerView.layoutManager  = GridLayoutManager(requireContext(), 3)
+        binding.moviesRecyclerView.adapter = moviesAdapter.withLoadStateFooter(
+            footer = LoadStateAdapter { moviesAdapter.retry() }
+        )
 
         moviesAdapter.addLoadStateListener { loadState ->
-            binding.refreshLayout.isRefreshing = loadState.refresh is LoadState.Loading
 
             if (loadState.refresh is LoadState.Error) {
                 Toast.makeText(
@@ -65,10 +65,11 @@ class MoviesListFragment : Fragment() {
             )
         }.liveData.cachedIn(lifecycle).observe(viewLifecycleOwner) { pagingData ->
             lifecycleScope.launch {
-                moviesAdapter.submitData(pagingData)
+                moviesAdapter.submitData(pagingData.filter { it.posterPath != null })
             }
         }
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

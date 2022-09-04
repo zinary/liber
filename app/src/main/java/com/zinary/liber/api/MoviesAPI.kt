@@ -26,10 +26,11 @@ interface MoviesAPI {
         @Path("person_id") personId: Int,
     ): Response<Person>
 
-    @GET("person/{person_id}/images?api_key=${BuildConfig.TMDB_API_KEY}")
-    suspend fun getPersonImages(
-        @Path("person_id") personId: Int,
-    ): Response<PersonImageResponse>
+    @GET("movie/{movie_id}/reviews?api_key=${BuildConfig.TMDB_API_KEY}")
+    suspend fun getMovieReviews(
+        @Path("movie_id") movie_id: Int,
+        @Query("page") page: Int
+    ): Response<ReviewResponse>
 
 
     @GET("person/{person_id}/movie_credits?api_key=${BuildConfig.TMDB_API_KEY}")
@@ -37,11 +38,11 @@ interface MoviesAPI {
         @Path("person_id") personId: Int,
     ): Response<PersonCredits>
 
-    @GET("search/movie?api_key=${BuildConfig.TMDB_API_KEY}")
+    @GET("search/multi?api_key=${BuildConfig.TMDB_API_KEY}")
     suspend fun searchMovies(
         @Query("query") query: String,
         @Query("page") page: Int,
-    ): Response<MovieResponse>
+    ): Response<SearchResponse>
 
     @GET("genre/movie/list?api_key=${BuildConfig.TMDB_API_KEY}&language=en-US&page=1")
     suspend fun getGenres(): Response<GenresResponse>

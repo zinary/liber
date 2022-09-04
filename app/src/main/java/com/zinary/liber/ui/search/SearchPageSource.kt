@@ -5,15 +5,15 @@ import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.zinary.liber.api.RetrofitInstance
-import com.zinary.liber.models.Movie
+import com.zinary.liber.models.SearchResult
 
 class SearchPageSource(
     private val query: String,
-) : PagingSource<Int, Movie>() {
+) : PagingSource<Int, SearchResult>() {
 
     override suspend fun load(
         params: LoadParams<Int>
-    ): LoadResult<Int, Movie> {
+    ): LoadResult<Int, SearchResult> {
 
         return try {
             // Start refresh at page 1 if undefined.
@@ -34,7 +34,7 @@ class SearchPageSource(
         }
     }
 
-    override fun getRefreshKey(state: PagingState<Int, Movie>): Int? {
+    override fun getRefreshKey(state: PagingState<Int, SearchResult>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
             val anchorPage = state.closestPageToPosition(anchorPosition)
             anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)

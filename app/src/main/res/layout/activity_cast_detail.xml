@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/pure_black"
     android:animateLayoutChanges="true"
+    android:background="@color/pure_black"
     android:orientation="vertical"
     tools:context=".ui.home.CastDetailActivity">
 
@@ -21,8 +21,7 @@
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginHorizontal="10dp">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -54,7 +53,7 @@
                 android:id="@+id/extra_details_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_margin="20dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -82,41 +81,11 @@
                     android:id="@+id/biography"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:maxLines="5"
                     android:ellipsize="end"
+                    android:maxLines="5"
                     android:textSize="14sp"
                     tools:text="asdasdasdas" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/known_for"
-                    android:textColor="@color/white"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/known_for"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    tools:text="12312" />
-
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/also_know_as"
-                    android:textColor="@color/white"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/aka"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    tools:text="abc" />
 
                 <LinearLayout
                     android:id="@+id/external_id_section"
@@ -128,7 +97,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/external_links"
+                        android:text="@string/social_links"
                         android:textColor="@color/white"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -141,34 +110,69 @@
 
                 </LinearLayout>
 
-                <LinearLayout
-                    android:id="@+id/recommended_section"
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/photos_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="20dp"
-                    android:orientation="vertical">
+                    android:text="@string/photos"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
-                    <TextView
-                        android:id="@+id/movies_by"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/white"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/photos_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:clipToPadding="false"
+                    android:orientation="horizontal"
+                    android:overScrollMode="never"
+                    android:paddingHorizontal="10dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:itemCount="5"
+                    tools:listitem="@layout/movie_image_item" />
+            </LinearLayout>
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/cast_movies_recycler_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:clipToPadding="false"
-                        android:orientation="horizontal"
-                        android:overScrollMode="never"
-                        android:paddingHorizontal="10dp"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                        tools:itemCount="10"
-                        tools:listitem="@layout/movie_poster_tile" />
-                </LinearLayout>
+            <LinearLayout
+                android:id="@+id/movies_section"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/movies_by"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    tools:text="Movies featuring Actor Name" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/cast_movies_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:clipToPadding="false"
+                    android:orientation="horizontal"
+                    android:overScrollMode="never"
+                    android:paddingHorizontal="10dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:itemCount="10"
+                    tools:listitem="@layout/movie_poster_tile" />
             </LinearLayout>
         </LinearLayout>
 

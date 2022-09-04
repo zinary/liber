@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-
+    android:layout_height="match_parent">
 
     <fragment
         android:id="@+id/nav_host_fragment_activity_main"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="match_parent"
         app:defaultNavHost="true"
         app:navGraph="@navigation/mobile_navigation" />
 
@@ -20,19 +17,21 @@
         android:id="@+id/bottom_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/pink"
-        android:elevation="10dp"
-        app:abb_indicatorLocation="bottom"
+        android:layout_gravity="bottom"
+        android:background="@drawable/bottom_bar_gradient"
+        android:elevation="20dp"
         app:abb_indicatorAppearance="round"
-        app:abb_indicatorColor="@color/white"
+        app:abb_indicatorColor="@color/pink"
         app:abb_indicatorHeight="6dp"
+        app:abb_indicatorLocation="bottom"
         app:abb_indicatorMargin="18dp"
         app:abb_selectedIndex="0"
         app:abb_selectedTabType="text"
-        app:abb_tabColorDisabled="@color/grey"
-        app:abb_tabColorSelected="@color/white"
+        app:abb_tabColor="@color/white_med"
+        app:abb_tabColorDisabled="@color/black"
+        app:abb_tabColorSelected="@color/pink"
         app:abb_tabs="@menu/bottom_nav_menu"
         app:abb_textSize="16sp"
-        app:abb_textStyle="bold" />
-
-</LinearLayout>
+        app:abb_textStyle="bold"
+        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

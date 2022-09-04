@@ -1,26 +1,16 @@
 package com.zinary.liber
 
 import android.os.Bundle
-import android.view.Menu
+import android.view.WindowManager
 import android.widget.PopupMenu
 import androidx.activity.viewModels
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
-import com.google.android.material.snackbar.Snackbar
 import com.zinary.liber.databinding.ActivityMainBinding
 import com.zinary.liber.enums.MoviesType
-import nl.joery.animatedbottombar.AnimatedBottomBar
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.signal.NoInternetDialogSignal
-import org.imaginativeworld.oopsnointernet.snackbars.fire.NoInternetSnackbarFire
 
 class MainActivity : AppCompatActivity() {
 
@@ -37,13 +27,6 @@ class MainActivity : AppCompatActivity() {
         val popUpMenu = PopupMenu(this, null)
         popUpMenu.inflate(R.menu.bottom_nav_menu)
         binding.bottomBar.setupWithNavController(popUpMenu.menu, navController)
-        mainViewModel.apply {
-            getMovies(MoviesType.POPULAR, mainViewModel.popularMovies)
-            getMovies(MoviesType.UPCOMING, mainViewModel.upcomingMovies)
-            getMovies(MoviesType.TOP_RATED, mainViewModel.topRatedMovies)
-            getMovies(MoviesType.NOW_PLAYING, mainViewModel.nowPlayingMovies)
-            getGenres()
-        }
 
         // No Internet Dialog: Signal
         NoInternetDialogSignal.Builder(
@@ -73,6 +56,19 @@ class MainActivity : AppCompatActivity() {
                 showAirplaneModeOffButtons = true // Optional
             }
         }.build()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mainViewModel.apply {
+            getMovies(MoviesType.POPULAR, mainViewModel.popularMovies)
+            getMovies(MoviesType.UPCOMING, mainViewModel.upcomingMovies)
+            getMovies(MoviesType.TOP_RATED, mainViewModel.topRatedMovies)
+            getMovies(MoviesType.NOW_PLAYING, mainViewModel.nowPlayingMovies)
+            getGenres()
+        }
+
+
     }
 
     override fun onSupportNavigateUp(): Boolean {

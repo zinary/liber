@@ -18,7 +18,7 @@ data class Person (
     @SerializedName("adult") var adult : Boolean,
     @SerializedName("imdb_id") var imdbId : String,
     @SerializedName("homepage") var homepage : String,
-    @SerializedName("images") var images : PersonImageResponse,
+    @SerializedName("images") var images : PersonImages,
     @SerializedName("movie_credits") var credits : PersonCredits,
     @SerializedName("external_ids") var externalIDs: ExternalIDs,
 

@@ -16,6 +16,10 @@
         <item name="fontFamily">@font/poppins_regular</item>
         <!-- enable window content transitions -->
         <item name="android:windowActivityTransitions">true</item>
+    </style>
 
+    <style name="roundedImageView" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">6dp</item>
     </style>
 </resources>
