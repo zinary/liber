@@ -1,7 +1,6 @@
 package com.zinary.liber
 
 import android.os.Bundle
-import android.view.WindowManager
 import android.widget.PopupMenu
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -9,6 +8,7 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import com.zinary.liber.databinding.ActivityMainBinding
 import com.zinary.liber.enums.MoviesType
+import eightbitlab.com.blurview.RenderEffectBlur
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.signal.NoInternetDialogSignal
 
@@ -56,6 +56,8 @@ class MainActivity : AppCompatActivity() {
                 showAirplaneModeOffButtons = true // Optional
             }
         }.build()
+
+        binding.blurView.setupWith(binding.container, RenderEffectBlur()).setBlurRadius(4f)
     }
 
     override fun onResume() {
@@ -67,8 +69,6 @@ class MainActivity : AppCompatActivity() {
             getMovies(MoviesType.NOW_PLAYING, mainViewModel.nowPlayingMovies)
             getGenres()
         }
-
-
     }
 
     override fun onSupportNavigateUp(): Boolean {
