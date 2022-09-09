@@ -4,11 +4,13 @@ import android.os.Bundle
 import android.widget.PopupMenu
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import com.zinary.liber.databinding.ActivityMainBinding
 import com.zinary.liber.enums.MoviesType
 import eightbitlab.com.blurview.RenderEffectBlur
+import kotlinx.coroutines.launch
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.signal.NoInternetDialogSignal
 
@@ -63,11 +65,13 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         mainViewModel.apply {
-            getMovies(MoviesType.POPULAR, mainViewModel.popularMovies)
-            getMovies(MoviesType.UPCOMING, mainViewModel.upcomingMovies)
-            getMovies(MoviesType.TOP_RATED, mainViewModel.topRatedMovies)
-            getMovies(MoviesType.NOW_PLAYING, mainViewModel.nowPlayingMovies)
-            getGenres()
+            lifecycleScope.launch {
+                getMovies(MoviesType.POPULAR, mainViewModel.popularMovies)
+                getMovies(MoviesType.UPCOMING, mainViewModel.upcomingMovies)
+                getMovies(MoviesType.TOP_RATED, mainViewModel.topRatedMovies)
+                getMovies(MoviesType.NOW_PLAYING, mainViewModel.nowPlayingMovies)
+                getGenres()
+            }
         }
     }
 
