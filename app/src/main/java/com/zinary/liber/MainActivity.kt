@@ -1,5 +1,6 @@
 package com.zinary.liber
 
+import android.os.Build
 import android.os.Bundle
 import android.widget.PopupMenu
 import androidx.activity.viewModels
@@ -10,6 +11,7 @@ import androidx.navigation.findNavController
 import com.zinary.liber.databinding.ActivityMainBinding
 import com.zinary.liber.enums.MoviesType
 import eightbitlab.com.blurview.RenderEffectBlur
+import eightbitlab.com.blurview.RenderScriptBlur
 import kotlinx.coroutines.launch
 import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
 import org.imaginativeworld.oopsnointernet.dialogs.signal.NoInternetDialogSignal
@@ -58,8 +60,9 @@ class MainActivity : AppCompatActivity() {
                 showAirplaneModeOffButtons = true // Optional
             }
         }.build()
-
-        binding.blurView.setupWith(binding.container, RenderEffectBlur()).setBlurRadius(4f)
+        val blurAlgorithm = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) RenderEffectBlur()
+        else RenderScriptBlur(this)
+        binding.blurView.setupWith(binding.container, blurAlgorithm).setBlurRadius(4f)
     }
 
     override fun onResume() {
