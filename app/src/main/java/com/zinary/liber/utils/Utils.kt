@@ -1,13 +1,16 @@
 package com.zinary.liber.utils
 
+import android.app.DownloadManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Environment
 import com.facebook.shimmer.Shimmer
 import com.facebook.shimmer.ShimmerDrawable
 import com.google.android.material.chip.Chip
 import com.zinary.liber.Liber
 import com.zinary.liber.R
+
 
 object Utils {
     private val shimmer =
@@ -26,7 +29,12 @@ object Utils {
         setShimmer(shimmer)
     }
 
-    fun createExternalIdChip(context: Context, name: String, url: String, iconDrawableId: Int? = null): Chip {
+    fun createExternalIdChip(
+        context: Context,
+        name: String,
+        url: String,
+        iconDrawableId: Int? = null
+    ): Chip {
         val chip = Chip(context).apply {
             text = name
             chipBackgroundColor = context.getColorStateList(R.color.black)
@@ -42,5 +50,19 @@ object Utils {
         }
 
         return chip
+    }
+
+    fun downloadFile(url: String) {
+        val downloadManager =
+            Liber.getContext().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager?
+        val uri = Uri.parse(url)
+        val fileName = uri.lastPathSegment
+        val request = DownloadManager.Request(uri)
+        request.setTitle("Liber")
+        request.setDescription("Downloading")
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
+        downloadManager?.enqueue(request)
     }
 }

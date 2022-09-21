@@ -62,4 +62,5 @@
     <string name="social_links">Social links</string>
     <string name="retry">Retry</string>
     <string name="failed_to_load">Failed to load</string>
+    <string name="download">Download</string>
 </resources>
