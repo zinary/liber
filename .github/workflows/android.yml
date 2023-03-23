@@ -1,0 +1,40 @@
+name: Android CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: set up JDK 11
+      uses: actions/setup-java@v3
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+        cache: gradle
+        
+    - name: Set TMDB API Key
+      env:
+          TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+      run: touch ./local.properties && echo TMDB_API_KEY="$TMDB_API_KEY" > ./local.properties
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+      
+    - name: Clean
+      run: ./gradlew clean
+
+    - name: Build with Gradle
+      run: ./gradlew assembleDebug --stacktrace
+
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v3.0.0
+      with:
+        path: "app/build/outputs/apk/debug/app-debug.apk"
